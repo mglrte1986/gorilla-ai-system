@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador QR - GORILLA AI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.02);
+        }
+        .qr-container {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+        .qr-container.show {
+            display: block;
+        }
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        #qrcode canvas {
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .download-btn {
+            margin-top: 20px;
+            background: #28a745;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+        .link-text {
+            color: #666;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        .message.show {
+            display: block;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦍 Generador QR GORILLA AI</h1>
+        
+        <div class="form-group">
+            <label for="urlInput">URL a codificar:</label>
+            <input type="url" id="urlInput" placeholder="https://mglrte1986.github.io/gorilla-ai-system" value="https://mglrte1986.github.io/gorilla-ai-system">
+        </div>
+
+        <div class="message" id="message"></div>
+
+        <button onclick="generarQR()">Generar QR</button>
+
+        <div class="qr-container" id="qrContainer">
+            <h3 style="color: #333; margin-bottom: 20px;">Tu QR está listo</h3>
+            <div id="qrcode"></div>
+            <p class="link-text" id="linkText"></p>
+            <button class="download-btn" onclick="descargarQR()">⬇️ Descargar QR</button>
+        </div>
+    </div>
+
+    <script>
+        function generarQR() {
+            const url = document.getElementById('urlInput').value.trim();
+            const messageDiv = document.getElementById('message');
+            const qrContainer = document.getElementById('qrContainer');
+
+            // Validar URL
+            if (!url) {
+                mostrarMensaje('Por favor ingresa una URL', 'error');
+                return;
+            }
+
+            // Validar formato URL
+            try {
+                new URL(url);
+            } catch (e) {
+                mostrarMensaje('Por favor ingresa una URL válida', 'error');
+                return;
+            }
+
+            // Limpiar QR anterior
+            document.getElementById('qrcode').innerHTML = '';
+
+            // Generar nuevo QR
+            new QRCode(document.getElementById("qrcode"), {
+                text: url,
+                width: 300,
+                height: 300,
+                colorDark: "#667eea",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            document.getElementById('linkText').textContent = url;
+            qrContainer.classList.add('show');
+            mostrarMensaje('¡QR generado correctamente!', 'success');
+        }
+
+        function mostrarMensaje(texto, tipo) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = texto;
+            messageDiv.className = 'message show ' + tipo;
+            setTimeout(() => messageDiv.classList.remove('show'), 3000);
+        }
+
+        function descargarQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'gorilla-ai-qr.png';
+            link.click();
+        }
+
+        // Generar QR automáticamente al cargar
+        window.addEventListener('load', () => {
+            generarQR();
+        });
+    </script>
+</body>
+</html>
