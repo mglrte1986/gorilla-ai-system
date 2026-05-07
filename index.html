@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GORILLA AI SYSTEM - Prompt Personalizado</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial; background:#0a0e1a; color:#fff; padding:20px; max-width:600px; margin:auto }
+        h2 { color:#f97316; text-align:center }
+        input, select { width:100%; padding:12px; margin:8px 0 20px 0; background:#1a1f2e; border:1px solid #3b82f6; color:#fff; border-radius:8px; font-size:16px }
+        button { background:#f97316; color:#fff; padding:15px; width:100%; border:none; border-radius:8px; font-size:18px; cursor:pointer; font-weight:bold }
+        button:hover { background:#ea580c }
+        .prompt-box { background:#1a1f2e; padding:15px; border-radius:8px; margin-top:20px; white-space:pre-wrap; border:1px solid #3b82f6 }
+        .pago-btn { background:#00a650 !important; margin-top:15px }
+        label { font-weight:bold; color:#3b82f6 }
+    </style>
+</head>
+<body>
+    <h2>🦍 GORILLA AI SYSTEM</h2>
+    <p style="text-align:center">Responde 3 preguntas y genera tu prompt personalizado para Mercado Libre</p>
+    
+    <label>1. ¿En qué nicho vendes en Mercado Libre?</label>
+    <input id="nicho" placeholder="Ej: Refacciones auto, Ropa, Electrónica">
+    
+    <label>2. ¿Cuál es tu mayor dolor hoy?</label>
+    <select id="dolor">
+        <option>Perder tiempo publicando</option>
+        <option>No sé qué precio poner</option>
+        <option>Tardo en responder preguntas</option>
+        <option>No entiendo reportes de Mercado Pago</option>
+    </select>
+    
+    <label>3. ¿Qué objetivo quieres lograr en 30 días?</label>
+    <input id="objetivo" placeholder="Ej: Automatizar 50 publicaciones">
+    
+    <button onclick="generar()">GENERAR MI PROMPT IA GRATIS</button>
+    
+    <div id="resultado"></div>
+
+<script>
+function generar(){
+    const nicho = document.getElementById('nicho').value;
+    const dolor = document.getElementById('dolor').value;
+    const objetivo = document.getElementById('objetivo').value;
+    
+    if(!nicho || !objetivo){ alert('Completa todos los campos'); return; }
+    
+    const prompt = `Actúa como GORILLA AI SYSTEM, experto en ingeniería de prompts para Mercado Libre y Mercado Pago.
+
+Contexto de mi negocio:
+- Nicho: ${nicho}
+- Dolor principal: ${dolor}
+- Objetivo 30 días: ${objetivo}
+
+Tarea: Crea un prompt técnico paso a paso para que yo use en ChatGPT/Claude que me ayude a resolver "${dolor}" y lograr "${objetivo}". Incluye: estructura de datos para API de ML, manejo de tokens, y ejemplo de script en Shell/Linux para automatizarlo. El output debe estar listo para copiar/pegar.`;
+
+    document.getElementById('resultado').innerHTML = `
+        <h3>✅ Tu Prompt Personalizado:</h3>
+        <div class="prompt-box">${prompt}</div>
+        <h3>📋 Instrucciones de uso:</h3>
+        <p>1. <b>Copia</b> el prompt de arriba<br>
+        2. <b>Pégalo</b> en ChatGPT-4, Claude o Meta AI<br>
+        3. <b>Ejecuta</b> lo que te indique la IA</p>
+        <a href="https://mpago.la/TU-LINK-AQUI" target="_blank">
+            <button class="pago-btn">💰 QUIERO LA VERSIÓN PRO + SOPORTE $399 MXN</button>
+        </a>
+        <p style="font-size:12px; text-align:center; margin-top:10px">*La versión Pro incluye scripts listos + soporte 1-a-1</p>`;
+}
+</script>
+</body>
+</html>
