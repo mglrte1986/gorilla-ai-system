@@ -85,7 +85,31 @@ PROMPT_MODIFIERS = {
 - Párrafos cortos (máx 2-3 líneas)
 - Usa emojis para separación visual
 - Estructura: Saludo → Propuesta → Urgencia → Acción
-- Incluye número de teléfono o link de CTA al final"""
+- Incluye número de teléfono o link de CTA al final""",
+        
+        "google_ads": """Estructura de campaña publicitaria de alta conversión para Google/YouTube Ads.
+- Diseña 3 variantes de títulos persuasivos que destruyan la objeción principal
+- Redacta copys específicos para anuncios de búsqueda y guiones de 15s para YouTube Ads
+- Incluye recomendaciones de segmentación de palabras clave y presupuesto optimizado para alto flujo
+- Estructura: Headline (30 chars) → Descripción (90 chars) → URL de destino específica
+- Usa números, urgencia y diferenciadores claros
+- Optimiza para CTR (5-10%) y conversión (5-15%)""",
+        
+        "google_workspace": """Foco en automatización de procesos y productividad empresarial.
+- Estructura la respuesta para ser implementada en el entorno de Google Workspace
+- Proporciona el código de Google Apps Script limpio, comentado y listo para copiar/pegar
+- Diseña el flujo conectando Google Sheets, Docs y Drive de manera eficiente
+- Incluye triggers (onFormSubmit, onEdit, etc.) y funciones reutilizables
+- Especifica qué API de Google Workspace necesita estar habilitada
+- Proporciona snippet de instalación con paso a paso""",
+        
+        "youtube_growth": """Optimización total para posicionamiento y SEO en el algoritmo de YouTube.
+- Genera 3 variantes de títulos de alto CTR (Click-Through Rate)
+- Estructura una descripción dinámica optimizada que retenga al usuario
+- Incluye recomendaciones de metadatos, etiquetas estratégicas y ganchos visuales
+- Proporciona timestamps para mejorar navegación
+- Crea brief de thumbnail con colores, emojis y elementos visuales
+- Optimiza keywords naturalmente (primeras 3 palabras = keyword principal)"""
     },
     
     "models": {
@@ -144,8 +168,8 @@ class PaymentResponse(BaseModel):
 class PromptRequest(BaseModel):
     user_id: str
     prompt_text: str
-    platform: str = "default"  # youtube, tiktok, x_twitter, linkedin, instagram, whatsapp
-    model: str = "claude"      # grok, claude, gemini, openai, llama
+    platform: str = "default"
+    model: str = "claude"
     niche: Optional[str] = None
     product: Optional[str] = None
     pain_point: Optional[str] = None
@@ -403,6 +427,20 @@ async def landing_page():
                 font-weight: bold;
                 color: #333;
             }}
+            .platforms-grid {{
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin: 20px 0;
+                font-size: 12px;
+            }}
+            .platform-badge {{
+                background: #667eea;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+                text-align: center;
+            }}
         </style>
     </head>
     <body>
@@ -419,11 +457,22 @@ async def landing_page():
                 <div class="price">${{os.getenv('PRICE_PER_PROMPT', '0.50')}} / Prompt</div>
                 <ul class="features">
                     <li>Prompts especializados por plataforma</li>
-                    <li>6 modelos de IA disponibles</li>
+                    <li>9 plataformas + 5 modelos de IA</li>
                     <li>Inyección de contexto (nicho, producto, dolor)</li>
-                    <li>Optimización por audiencia</li>
+                    <li>Código Ready-to-Use (Google Apps Script)</li>
                     <li>Soporte prioritario 24/7</li>
                 </ul>
+                <div class="platforms-grid">
+                    <div class="platform-badge">🎬 YouTube</div>
+                    <div class="platform-badge">📱 TikTok</div>
+                    <div class="platform-badge">𝕏 Twitter</div>
+                    <div class="platform-badge">💼 LinkedIn</div>
+                    <div class="platform-badge">📸 Instagram</div>
+                    <div class="platform-badge">💬 WhatsApp</div>
+                    <div class="platform-badge">💰 Google Ads</div>
+                    <div class="platform-badge">⚙️ Workspace</div>
+                    <div class="platform-badge">📈 Growth</div>
+                </div>
             </div>
             
             <div class="user-info">
@@ -515,4 +564,248 @@ async def landing_page():
     """
     return html_content
 
-@app.post(\"/api/create-payment\")\nasync def create_payment(payment: PaymentRequest, db = Depends(get_db)):\n    \"\"\"Crear pago en PayPal para prompts\"\"\"\n    try:\n        price_per_prompt = float(os.getenv(\"PRICE_PER_PROMPT\", \"0.50\"))\n        total_amount = price_per_prompt * payment.prompts_count\n        \n        payment_obj = paypalrestsdk.Payment({\n            \"intent\": \"sale\",\n            \"payer\": {\"payment_method\": \"paypal\"},\n            \"redirect_urls\": {\n                \"return_url\": f\"{payment.return_url}?payment_id={{paymentId}}\",\n                \"cancel_url\": \"http://localhost:8000/\"\n            },\n            \"transactions\": [{\n                \"item_list\": {\n                    \"items\": [{\n                        \"name\": f\"GORILLA AI - {payment.prompts_count} Prompts\",\n                        \"sku\": f\"PROMPT-{payment.prompts_count}\",\n                        \"price\": str(price_per_prompt),\n                        \"currency\": os.getenv(\"CURRENCY\", \"USD\"),\n                        \"quantity\": payment.prompts_count\n                    }]\n                },\n                \"amount\": {\n                    \"total\": f\"{total_amount:.2f}\",\n                    \"currency\": os.getenv(\"CURRENCY\", \"USD\"),\n                    \"details\": {\"subtotal\": f\"{total_amount:.2f}\"}\n                },\n                \"description\": f\"Compra de {payment.prompts_count} prompts para GORILLA AI\"\n            }]\n        })\n        \n        if payment_obj.create():\n            transaction = Transaction(\n                user_id=payment.user_id,\n                payment_id=payment_obj.id,\n                amount=total_amount,\n                prompts_count=payment.prompts_count,\n                status=\"pending\"\n            )\n            db.add(transaction)\n            db.commit()\n            \n            return PaymentResponse(\n                success=True,\n                message=\"Payment created successfully\",\n                approval_url=payment_obj.links[1]['href'],\n                payment_id=payment_obj.id\n            )\n        else:\n            return PaymentResponse(\n                success=False,\n                message=f\"Payment creation failed: {payment_obj.error['message']}\"\n            )\n    except Exception as e:\n        return PaymentResponse(\n            success=False,\n            message=f\"Error: {str(e)}\"\n        )\n\n@app.post(\"/api/execute-payment\")\nasync def execute_payment(payment_id: str, payer_id: str, db = Depends(get_db)):\n    \"\"\"Ejecutar pago en PayPal\"\"\"\n    try:\n        payment = paypalrestsdk.Payment.find(payment_id)\n        \n        if payment.execute({\"payer_id\": payer_id}):\n            transaction = db.query(Transaction).filter(\n                Transaction.payment_id == payment_id\n            ).first()\n            \n            if transaction:\n                transaction.status = \"completed\"\n                transaction.completed_at = datetime.now()\n                db.commit()\n            \n            user_token = f\"{transaction.user_id}:{payment_id}\"\n            \n            return {\n                \"success\": True,\n                \"message\": \"Payment executed successfully\",\n                \"token\": user_token,\n                \"prompts\": transaction.prompts_count\n            }\n        else:\n            return {\n                \"success\": False,\n                \"message\": f\"Payment execution failed: {payment.error['message']}\"\n            }\n    except Exception as e:\n        return {\"success\": False, \"message\": f\"Error: {str(e)}\"}\n\n@app.post(\"/api/grant-free-access\")\nasync def grant_free_access(user_id: str, db = Depends(get_db)):\n    \"\"\"Otorgar acceso gratuito con 5 prompts\"\"\"\n    try:\n        user = db.query(User).filter(User.email == user_id).first()\n        \n        if not user:\n            user = User(\n                email=user_id,\n                prompts_remaining=5,\n                is_free_user=True\n            )\n            db.add(user)\n            db.commit()\n        \n        user_token = f\"{user_id}:free\"\n        \n        return {\n            \"success\": True,\n            \"message\": \"Free access granted\",\n            \"token\": user_token,\n            \"prompts\": 5\n        }\n    except Exception as e:\n        return {\"success\": False, \"message\": f\"Error: {str(e)}\"}\n\n@app.post(\"/api/generate-specialized-prompt\")\nasync def generate_specialized_prompt(prompt: PromptRequest, db = Depends(get_db)):\n    \"\"\"Generar prompt especializado según plataforma y modelo\"\"\"\n    try:\n        user = db.query(User).filter(User.email == prompt.user_id).first()\n        \n        if not user:\n            return PromptGenerationResponse(\n                success=False,\n                message=\"User not found\",\n                original_prompt=\"\",\n                optimized_prompt=\"\",\n                platform=prompt.platform,\n                model=prompt.model,\n                remaining_prompts=0\n            )\n        \n        if user.prompts_remaining <= 0:\n            return PromptGenerationResponse(\n                success=False,\n                message=\"No prompts remaining. Please purchase more prompts.\",\n                original_prompt=\"\",\n                optimized_prompt=\"\",\n                platform=prompt.platform,\n                model=prompt.model,\n                remaining_prompts=0\n            )\n        \n        # Aplicar modificadores de especialización\n        optimized_prompt = apply_prompt_modifiers(\n            base_prompt=prompt.prompt_text,\n            platform=prompt.platform,\n            model=prompt.model,\n            niche=prompt.niche or \"\",\n            product=prompt.product or \"\",\n            pain_point=prompt.pain_point or \"\"\n        )\n        \n        # Deducir un prompt\n        user.prompts_remaining -= 1\n        \n        # Registrar en log\n        log = PromptLog(\n            user_id=prompt.user_id,\n            prompt_text=prompt.prompt_text,\n            response=optimized_prompt\n        )\n        db.add(log)\n        db.commit()\n        \n        return PromptGenerationResponse(\n            success=True,\n            message=\"Prompt generated successfully\",\n            original_prompt=prompt.prompt_text,\n            optimized_prompt=optimized_prompt,\n            platform=prompt.platform,\n            model=prompt.model,\n            remaining_prompts=user.prompts_remaining\n        )\n    except Exception as e:\n        return PromptGenerationResponse(\n            success=False,\n            message=f\"Error: {str(e)}\",\n            original_prompt=\"\",\n            optimized_prompt=\"\",\n            platform=prompt.platform,\n            model=prompt.model,\n            remaining_prompts=0\n        )\n\n@app.get(\"/api/user-info\")\nasync def get_user_info(user_id: str, db = Depends(get_db)):\n    \"\"\"Obtener información del usuario y prompts restantes\"\"\"\n    try:\n        user = db.query(User).filter(User.email == user_id).first()\n        \n        if not user:\n            return {\"success\": False, \"message\": \"User not found\"}\n        \n        return {\n            \"success\": True,\n            \"user_id\": user.email,\n            \"prompts_remaining\": user.prompts_remaining,\n            \"is_free_user\": user.is_free_user,\n            \"created_at\": user.created_at\n        }\n    except Exception as e:\n        return {\"success\": False, \"message\": f\"Error: {str(e)}\"}\n\n@app.get(\"/success\", response_class=HTMLResponse)\nasync def payment_success():\n    \"\"\"Página de éxito de pago\"\"\"\n    return \"\"\"\n    <!DOCTYPE html>\n    <html>\n    <head>\n        <title>Pago Completado</title>\n        <style>\n            body { font-family: Arial, sans-serif; background: #667eea; min-height: 100vh; display: flex; align-items: center; justify-content: center; }\n            .container { background: white; padding: 50px; border-radius: 10px; text-align: center; }\n            h1 { color: #28a745; }\n            p { color: #666; margin: 20px 0; }\n            a { background: #667eea; color: white; padding: 10px 30px; text-decoration: none; border-radius: 5px; }\n        </style>\n    </head>\n    <body>\n        <div class=\"container\">\n            <h1>✅ ¡Pago Completado!</h1>\n            <p>Tu compra ha sido procesada correctamente.</p>\n            <p>Estamos redirigiendo a la aplicación...</p>\n            <a href=\"/app\">Ir a GORILLA AI</a>\n        </div>\n        <script>\n            setTimeout(() => window.location.href = '/app', 3000);\n        </script>\n    </body>\n    </html>\n    \"\"\"\n\nif __name__ == \"__main__\":\n    import uvicorn\n    uvicorn.run(\n        app,\n        host=os.getenv(\"API_HOST\", \"127.0.0.1\"),\n        port=int(os.getenv(\"API_PORT\", 8000))\n    )\n
+@app.post("/api/create-payment")
+async def create_payment(payment: PaymentRequest, db = Depends(get_db)):
+    """Crear pago en PayPal para prompts"""
+    try:
+        price_per_prompt = float(os.getenv("PRICE_PER_PROMPT", "0.50"))
+        total_amount = price_per_prompt * payment.prompts_count
+        
+        payment_obj = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {"payment_method": "paypal"},
+            "redirect_urls": {
+                "return_url": f"{payment.return_url}?payment_id={{paymentId}}",
+                "cancel_url": "http://localhost:8000/"
+            },
+            "transactions": [{
+                "item_list": {
+                    "items": [{
+                        "name": f"GORILLA AI - {payment.prompts_count} Prompts",
+                        "sku": f"PROMPT-{payment.prompts_count}",
+                        "price": str(price_per_prompt),
+                        "currency": os.getenv("CURRENCY", "USD"),
+                        "quantity": payment.prompts_count
+                    }]
+                },
+                "amount": {
+                    "total": f"{total_amount:.2f}",
+                    "currency": os.getenv("CURRENCY", "USD"),
+                    "details": {"subtotal": f"{total_amount:.2f}"}
+                },
+                "description": f"Compra de {payment.prompts_count} prompts para GORILLA AI"
+            }]
+        })
+        
+        if payment_obj.create():
+            transaction = Transaction(
+                user_id=payment.user_id,
+                payment_id=payment_obj.id,
+                amount=total_amount,
+                prompts_count=payment.prompts_count,
+                status="pending"
+            )
+            db.add(transaction)
+            db.commit()
+            
+            return PaymentResponse(
+                success=True,
+                message="Payment created successfully",
+                approval_url=payment_obj.links[1]['href'],
+                payment_id=payment_obj.id
+            )
+        else:
+            return PaymentResponse(
+                success=False,
+                message=f"Payment creation failed: {payment_obj.error['message']}"
+            )
+    except Exception as e:
+        return PaymentResponse(
+            success=False,
+            message=f"Error: {str(e)}"
+        )
+
+@app.post("/api/execute-payment")
+async def execute_payment(payment_id: str, payer_id: str, db = Depends(get_db)):
+    """Ejecutar pago en PayPal"""
+    try:
+        payment = paypalrestsdk.Payment.find(payment_id)
+        
+        if payment.execute({"payer_id": payer_id}):
+            transaction = db.query(Transaction).filter(
+                Transaction.payment_id == payment_id
+            ).first()
+            
+            if transaction:
+                transaction.status = "completed"
+                transaction.completed_at = datetime.now()
+                db.commit()
+            
+            user_token = f"{transaction.user_id}:{payment_id}"
+            
+            return {
+                "success": True,
+                "message": "Payment executed successfully",
+                "token": user_token,
+                "prompts": transaction.prompts_count
+            }
+        else:
+            return {
+                "success": False,
+                "message": f"Payment execution failed: {payment.error['message']}"
+            }
+    except Exception as e:
+        return {"success": False, "message": f"Error: {str(e)}"}
+
+@app.post("/api/grant-free-access")
+async def grant_free_access(user_id: str, db = Depends(get_db)):
+    """Otorgar acceso gratuito con 5 prompts"""
+    try:
+        user = db.query(User).filter(User.email == user_id).first()
+        
+        if not user:
+            user = User(
+                email=user_id,
+                prompts_remaining=5,
+                is_free_user=True
+            )
+            db.add(user)
+            db.commit()
+        
+        user_token = f"{user_id}:free"
+        
+        return {
+            "success": True,
+            "message": "Free access granted",
+            "token": user_token,
+            "prompts": 5
+        }
+    except Exception as e:
+        return {"success": False, "message": f"Error: {str(e)}"}
+
+@app.post("/api/generate-specialized-prompt")
+async def generate_specialized_prompt(prompt: PromptRequest, db = Depends(get_db)):
+    """Generar prompt especializado según plataforma y modelo"""
+    try:
+        user = db.query(User).filter(User.email == prompt.user_id).first()
+        
+        if not user:
+            return PromptGenerationResponse(
+                success=False,
+                message="User not found",
+                original_prompt="",
+                optimized_prompt="",
+                platform=prompt.platform,
+                model=prompt.model,
+                remaining_prompts=0
+            )
+        
+        if user.prompts_remaining <= 0:
+            return PromptGenerationResponse(
+                success=False,
+                message="No prompts remaining. Please purchase more prompts.",
+                original_prompt="",
+                optimized_prompt="",
+                platform=prompt.platform,
+                model=prompt.model,
+                remaining_prompts=0
+            )
+        
+        # Aplicar modificadores de especialización
+        optimized_prompt = apply_prompt_modifiers(
+            base_prompt=prompt.prompt_text,
+            platform=prompt.platform,
+            model=prompt.model,
+            niche=prompt.niche or "",
+            product=prompt.product or "",
+            pain_point=prompt.pain_point or ""
+        )
+        
+        # Deducir un prompt
+        user.prompts_remaining -= 1
+        
+        # Registrar en log
+        log = PromptLog(
+            user_id=prompt.user_id,
+            prompt_text=prompt.prompt_text,
+            response=optimized_prompt
+        )
+        db.add(log)
+        db.commit()
+        
+        return PromptGenerationResponse(
+            success=True,
+            message="Prompt generated successfully",
+            original_prompt=prompt.prompt_text,
+            optimized_prompt=optimized_prompt,
+            platform=prompt.platform,
+            model=prompt.model,
+            remaining_prompts=user.prompts_remaining
+        )
+    except Exception as e:
+        return PromptGenerationResponse(
+            success=False,
+            message=f"Error: {str(e)}",
+            original_prompt="",
+            optimized_prompt="",
+            platform=prompt.platform,
+            model=prompt.model,
+            remaining_prompts=0
+        )
+
+@app.get("/api/user-info")
+async def get_user_info(user_id: str, db = Depends(get_db)):
+    """Obtener información del usuario y prompts restantes"""
+    try:
+        user = db.query(User).filter(User.email == user_id).first()
+        
+        if not user:
+            return {"success": False, "message": "User not found"}
+        
+        return {
+            "success": True,
+            "user_id": user.email,
+            "prompts_remaining": user.prompts_remaining,
+            "is_free_user": user.is_free_user,
+            "created_at": user.created_at
+        }
+    except Exception as e:
+        return {"success": False, "message": f"Error: {str(e)}"}
+
+@app.get("/success", response_class=HTMLResponse)
+async def payment_success():
+    """Página de éxito de pago"""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Pago Completado</title>
+        <style>
+            body { font-family: Arial, sans-serif; background: #667eea; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+            .container { background: white; padding: 50px; border-radius: 10px; text-align: center; }
+            h1 { color: #28a745; }
+            p { color: #666; margin: 20px 0; }
+            a { background: #667eea; color: white; padding: 10px 30px; text-decoration: none; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>✅ ¡Pago Completado!</h1>
+            <p>Tu compra ha sido procesada correctamente.</p>
+            <p>Estamos redirigiendo a la aplicación...</p>
+            <a href="/app">Ir a GORILLA AI</a>
+        </div>
+        <script>
+            setTimeout(() => window.location.href = '/app', 3000);
+        </script>
+    </body>
+    </html>
+    """
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        app,
+        host=os.getenv("API_HOST", "127.0.0.1"),
+        port=int(os.getenv("API_PORT", 8000))
+    )
