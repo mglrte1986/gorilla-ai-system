@@ -1,0 +1,70 @@
+# HECTOR - Gitignore
+# Archivos y directorios a ignorar en Git
+
+# Credenciales y configuración sensible
+config/.env
+config/hector-service-account.json
+config/secrets.json
+.env
+.env.local
+
+# Directorios de datos
+data/
+logs/
+reports/
+*.log
+
+# Directorios de renders
+data/renders/
+data/temp_renders/
+data/cache/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Entorno virtual
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Directorios temporales
+/tmp/
+/temp/
+*.tmp
+
+# Archivos de sistema
+.AppleDouble
+.LSOverride
+._*
