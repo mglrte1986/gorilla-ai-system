@@ -1,0 +1,37 @@
+import os
+import logging
+
+# Configuración de logs
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def calcular_rentabilidad(precio_amazon, precio_ml):
+    # Usando constantes para márgenes
+    comision_ml = 0.15 
+    envio_estimado = 100.0
+    
+    ingreso_neto = precio_ml * (1 - comision_ml)
+    costo_total = precio_amazon + envio_estimado
+    
+    return ingreso_neto - costo_total
+
+def procesar_arbitraje():
+    # Acceso seguro a credenciales desde GitHub Secrets
+    api_key = os.environ.get('API_KEY')
+    if not api_key:
+        logging.error("Error: API_KEY no configurada.")
+        return
+
+    # Aquí se conectarían los scrapers en el futuro
+    amazon_price = 500.0 
+    ml_price = 800.0     
+    
+    ganancia = calcular_rentabilidad(amazon_price, ml_price)
+    
+    if ganancia > 50:
+        # En el futuro, esta función llamará al bot de voz
+        logging.info(f"GO86 ALERTA: Oportunidad detectada. Margen: ${ganancia}")
+    else:
+        logging.info("Ciclo terminado: Sin margen rentable.")
+
+if __name__ == "__main__":
+    procesar_arbitraje()
