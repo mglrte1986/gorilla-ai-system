@@ -1,0 +1,39 @@
+[33m987d1f8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mhector-production-main[m[33m, [m[1;31morigin/hector-production-main[m[33m, [m[1;32mmain[m[33m)[m HECTOR Copilot Orchestrator v1.0 - Sistema de expansión autónoma
+ src/copilot_orchestrator.py | 451 [32m++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 451 insertions(+)
+[33m4a71026[m Render Core Script - Script de renderizado base con ffmpeg
+ scripts/render_core.sh | 247 [32m+++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 247 insertions(+)
+[33mce3c17b[m Gitignore - Excluir archivos sensibles de Git
+ .gitignore | 70 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 70 insertions(+)
+[33m17a8a79[m Dependencias de Python para HECTOR
+ requirements.txt | 9 [32m+++++++++[m
+ 1 file changed, 9 insertions(+)
+[33me7af2d0[m Mass Production Orchestrator - Coordinador de producción en masa
+ scripts/mass_production.py | 226 [32m+++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 226 insertions(+)
+[33m33e2992[m Video Production Engine - Motor de generación de video para HECTOR
+ src/video_engine.py | 314 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 314 insertions(+)
+[33m59923f6[m Archivo de configuración de ejemplo para HECTOR
+ config/.env.example | 145 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 145 insertions(+)
+[33m02012c0[m Add 3 new platform specializations: google_ads, google_workspace, youtube_growth - Total 9 platforms now available
+ main.py | 305 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m[31m--[m
+ 1 file changed, 299 insertions(+), 6 deletions(-)
+[33me7862a4[m Integrate prompt specialization matrix with platform and model modifiers
+ main.py | 518 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 518 insertions(+)
+[33mcf7d780[m Update index.html
+ index.html | 156 [32m++++++++++++++++++++++++++++++++++++++[m[31m-----------------------[m
+ 1 file changed, 98 insertions(+), 58 deletions(-)
+[33m00e73aa[m Add generador QR
+ qr-gorilla.html | 209 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 209 insertions(+)
+[33md69289f[m Landing GORILLA AI lista con QR correcto
+ Creando-embudo-IA-ML.html | 79 [32m+++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 79 insertions(+)
+[33m24de2f5[m Add landing GORILLA AI con generador
+ index.html | 71 [32m++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ 1 file changed, 71 insertions(+)
