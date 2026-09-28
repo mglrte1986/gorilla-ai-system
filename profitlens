@@ -1,0 +1,8 @@
+# 1. Traer los cambios pendientes del servidor
+git fetch origin
+
+# 2. Sincronizar tu rama local con el remoto (evitando conflictos)
+git pull origin main-py --rebase
+
+# 3. Empujar tus 7 commits pendientes a producción
+git push origin main-py

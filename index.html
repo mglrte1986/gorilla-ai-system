@@ -3,108 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GORILLA AI SYSTEM - Prompt Generator</title>
+    <title>Gorilla AI System</title>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background: #0a0f0d; 
-            color: #e0e6e3;
-            max-width: 600px; 
-            margin: auto; 
-            padding: 20px;
-        }
-        h2 { color: #00ffcc; text-align: center; }
-        .box {
-            background: #111a16;
-            border: 1px solid #1f3a2f;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        label { font-weight: bold; color: #a3b8b0; display: block; margin-top: 15px; }
-        select, input, textarea { 
-            width: 100%; padding: 12px; margin: 8px 0; 
-            background: #1a2922; border: 1px solid #2d4f3e; 
-            color: #fff; border-radius: 5px; box-sizing: border-box;
-        }
-        button { 
-            width: 100%; background: #00ffcc; color: #050807; 
-            padding: 14px; border: none; font-weight: bold; 
-            font-size: 16px; cursor: pointer; border-radius: 5px; 
-            margin-top: 15px;
-        }
-        button:hover { background: #00b38f; }
-        textarea { height: 180px; font-family: monospace; background: #070c0a; color: #00ffcc; }
-        .footer-text { text-align: center; color: #4f7364; font-size: 12px; margin-top: 30px; }
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #38bdf8; --accent: #22c55e; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; min-height: 100vh; align-items: center; justify-content: center; }
+        .container { background: var(--card); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 40px; max-width: 600px; width: 90%; text-align: center; }
+        h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; }
+        p { color: #94a3b8; font-size: 1.1rem; margin-bottom: 30px; }
+        .btn { display: inline-block; padding: 12px 28px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; transition: transform 0.2s; }
+        .btn:hover { transform: scale(1.05); }
+        /* Estilos del Agente IA Integrado */
+        .agent-box { margin-top: 30px; border-top: 1px solid #334155; padding-top: 20px; text-align: left; }
+        .agent-box h3 { font-size: 1.2rem; color: var(--primary); margin-bottom: 10px; }
+        .chat-output { background: #0f172a; border-radius: 8px; padding: 15px; height: 120px; overflow-y: auto; font-size: 0.9rem; color: #cbd5e1; margin-bottom: 10px; border: 1px solid #334155; }
+        .chat-input-group { display: flex; gap: 10px; }
+        .chat-input-group input { flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #475569; background: #1e293b; color: #fff; }
+        .chat-input-group button { padding: 10px 20px; background: var(--primary); border: none; border-radius: 6px; color: #0f172a; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>🦍 Gorilla AI System</h1>
+        <p>Infraestructura inteligente, automatización y alto rendimiento productivo.</p>
+        <a href="https://github.com/mglrte1986/gorilla-ai-system" target="_blank" class="btn">Ver Repositorio</a>
 
-    <h2>🦍 HÉCTOR EL JEFE GORILA IA SYSTEM</h2>
-    
-    <div class="box" id="formulario">
-        <p style="text-align: center; margin-top: 0; color: #8ba398;">Configura tu Cerebro de Prompts en 3 pasos</p>
-        
-        <label for="modelo">1. ¿Qué modelo de IA estás utilizando?</label>
-        <select id="modelo">
-            <option value="ChatGPT-4o">ChatGPT-4o (OpenAI)</option>
-            <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet (Anthropic)</option>
-            <option value="Gemini 1.5 Pro">Gemini 1.5 Pro (Google)</option>
-            <option value="Llama 3 (Local)">Llama 3 / UI Local</option>
-        </select>
-
-        <label for="ocupacion">2. ¿Cuál es tu ocupación o nicho de negocio?</label>
-        <input type="text" id="ocupacion" placeholder="Ej: Ventas en Mercado Libre, Automatización, Refacciones">
-
-        <label for="tarea">3. ¿Qué objetivo o dolor quieres resolver hoy?</label>
-        <input type="text" id="tarea" placeholder="Ej: Responder preguntas rápido, crear copys de retención, optimizar script">
-
-        <button onclick="procesarCerebro()">GENERAR PROMPT MAESTRO 🚀</button>
+        <div class="agent-box">
+            <h3>🤖 Agente Héctor (En Línea)</h3>
+            <div id="chatOutput" class="chat-output"><strong>Héctor:</strong> Sistema activo. ¿En qué proceso de producción te ayudo hoy?</div>
+            <div class="chat-input-group">
+                <input type="text" id="userInput" placeholder="Escribe tu comando o consulta..." onkeypress="handleKey(event)">
+                <button onclick="sendPrompt()">Enviar</button>
+            </div>
+        </div>
     </div>
-
-    <div class="box" id="resultado-box" style="display:none;">
-        <h3 style="color: #00ffcc; margin-top: 0;">🤖 PROMPT OPTIMIZADO LISTO</h3>
-        <p style="font-size: 13px; color: #a3b8b0;">Copia este prompt y pégalo directamente en tu IA para activar sus nuevas habilidades:</p>
-        <textarea id="output-prompt" readonly></textarea>
-        <button onclick="copiarPrompt()" style="background: #ffffff; color: #000;">COPIAR AL PORTAPAPELES 📋</button>
-    </div>
-
-    <p class="footer-text">Pregúntame sin miedo • © 2026 GORILLA AI SYSTEM</p>
 
     <script>
-        function procesarCerebro() {
-            const modeloIA = document.getElementById('modelo').value;
-            const ocupacion = document.getElementById('ocupacion').value || "Emprendedor / Automatizador";
-            const tarea = document.getElementById('tarea').value || "Optimizar procesos operativos";
+        function sendPrompt() {
+            const input = document.getElementById('userInput');
+            const output = document.getElementById('chatOutput');
+            const text = input.value.trim();
+            
+            if(!text) return;
 
-            const promptMaestro = `Actúa como un Ingeniero de Prompts de Élite y Experto en ${ocupacion}. Estás optimizando una tarea diseñada específicamente para ser ejecutada en el modelo ${modeloIA}.
+            output.innerHTML += <br><span style="color: #38bdf8;">Tú:</span> ;
+            input.value = '';
 
-### 🎯 OBJETIVO PRINCIPAL
-Resolver con máxima eficiencia técnica y cero redundancia la siguiente tarea: "${tarea}"
-
-### 🛠️ DIRECTRICES DE ARQUITECTURA (GORILLA CORE)
-1. **Enfoque Práctico:** Estructura la respuesta paso a paso, priorizando la optimización de recursos y rendimiento del sistema.
-2. **Formato Scannable:** Entrega bloques de código limpios o listas estructuradas sin rodeos teóricos innecesarios.
-3. **Optimización de Contexto:** Adapta las respuestas para mantener una retención alta si se trata de contenido, o un consumo mínimo de recursos si es código.
-
-### 📝 FORMATO DE SALIDA REQUERIDO
-- **Diagnóstico Breve:** Análisis rápido del problema raíz.
-- **Solución / Script:** El bloque técnico o estratégico listo para producción.
-- **Validación:** Comandos o métricas para verificar el funcionamiento.
-
-Comienza diciendo: "Entendido. Procesando requerimientos bajo el protocolo Gorilla AI para ${modeloIA}..."`;
-
-            document.getElementById('resultado-box').style.display = 'block';
-            document.getElementById('output-prompt').value = promptMaestro;
-            document.getElementById('resultado-box').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                let response = "Comando procesado correctamente en el entorno base.";
+                if(text.toLowerCase().includes('hola')) {
+                    response = "¡Hola, Director! Listo para ejecutar tareas de producción y flujos de efectivo.";
+                } else if(text.toLowerCase().includes('script')) {
+                    response = "Ejecutando validación de scripts en la terminal de shell...";
+                }
+                output.innerHTML += <br><strong style="color: #22c55e;">Héctor:</strong> ;
+                output.scrollTop = output.scrollHeight;
+            }, 500);
         }
 
-        function copiarPrompt() {
-            const copyText = document.getElementById("output-prompt");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            alert("¡Prompt maestro copiado con éxito! Pégalo en tu IA.");
+        function handleKey(e) {
+            if(e.key === 'Enter') sendPrompt();
         }
     </script>
 </body>
