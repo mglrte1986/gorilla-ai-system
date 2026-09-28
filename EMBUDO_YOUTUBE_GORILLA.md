@@ -23,7 +23,16 @@ Aprende a estructurar, guionar y monetizar cursos online en minutos con la prime
 ---
 📌 ENLACES Y RECURSOS MENCIONADOS:
 • Acceso a la Academia Gamificada: [https://mglrte1986.github.io/gorilla-ai-system/?utm_source=youtube&utm_medium=description&utm_content=cta_principal](https://mglrte1986.github.io/gorilla-ai-system/?utm_source=youtube&utm_medium=description&utm_content=cta_principal)
+• Base44 — planes para crear con IA: https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing
 • Comunidad HÉCTOR EL JEFE GORILA IA SYSTEM: [Únete a la comunidad Gorilla IA por WhatsApp](https://wa.me/528112749473?text=Hola%2C%20quiero%20unirme%20a%20la%20comunidad%20Gorilla%20IA)
+
+---
+## 2. COMENTARIO FIJADO PARA VIDEOS DE IA Y HERRAMIENTAS
+
+```text
+🛠️ ¿Buscas una herramienta para crear con IA? Conoce los planes de Base44:
+https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing
+```
 
 ---
 ⏰ MARCAS DE TIEMPO (TIMESTAMPS):

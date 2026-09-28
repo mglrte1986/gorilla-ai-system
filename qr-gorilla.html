@@ -103,6 +103,24 @@
             word-break: break-all;
             margin: 10px 0;
         }
+        .cta-link {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            transition: all 0.2s ease-in-out;
+        }
+        .cta-link:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+        }
         .message {
             padding: 10px;
             margin: 10px 0;
@@ -130,12 +148,16 @@
         
         <div class="form-group">
             <label for="urlInput">URL a codificar:</label>
-            <input type="url" id="urlInput" placeholder="https://mglrte1986.github.io/gorilla-ai-system" value="https://mglrte1986.github.io/gorilla-ai-system">
+            <input type="url" id="urlInput" placeholder="https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing" value="https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing">
         </div>
 
         <div class="message" id="message"></div>
 
         <button onclick="generarQR()">Generar QR</button>
+        <p class="link-text">Abre Base44 directamente desde este enlace:</p>
+        <a href="https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing" class="cta-link" target="_blank" rel="noopener noreferrer">
+            Ver Planes y Precios Base44
+        </a>
 
         <div class="qr-container" id="qrContainer">
             <h3 style="color: #333; margin-bottom: 20px;">Tu QR está listo</h3>

@@ -12,6 +12,25 @@
         p { color: #94a3b8; font-size: 1.1rem; margin-bottom: 30px; }
         .btn { display: inline-block; padding: 12px 28px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 8px; font-weight: bold; transition: transform 0.2s; }
         .btn:hover { transform: scale(1.05); }
+        .cta-link {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            transition: all 0.2s ease-in-out;
+        }
+        .cta-link:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+        }
+        .cta-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
         /* Estilos del Agente IA Integrado */
         .agent-box { margin-top: 30px; border-top: 1px solid #334155; padding-top: 20px; text-align: left; }
         .agent-box h3 { font-size: 1.2rem; color: var(--primary); margin-bottom: 10px; }
@@ -25,7 +44,10 @@
     <div class="container">
         <h1>🦍 Gorilla AI System</h1>
         <p>Infraestructura inteligente, automatización y alto rendimiento productivo.</p>
-        <a href="https://github.com/mglrte1986/gorilla-ai-system" target="_blank" class="btn">Ver Repositorio</a>
+        <div class="cta-group">
+            <a href="https://github.com/mglrte1986/gorilla-ai-system" target="_blank" rel="noopener noreferrer" class="btn">Ver Repositorio</a>
+            <a href="https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing" class="btn cta-link" target="_blank" rel="noopener noreferrer">Ver Planes y Precios Base44</a>
+        </div>
 
         <div class="agent-box">
             <h3>🤖 Agente Héctor (En Línea)</h3>
@@ -45,7 +67,7 @@
             
             if(!text) return;
 
-            output.innerHTML += <br><span style="color: #38bdf8;">Tú:</span> ;
+            appendMessage(output, 'Tú', text, '#38bdf8');
             input.value = '';
 
             setTimeout(() => {
@@ -55,9 +77,18 @@
                 } else if(text.toLowerCase().includes('script')) {
                     response = "Ejecutando validación de scripts en la terminal de shell...";
                 }
-                output.innerHTML += <br><strong style="color: #22c55e;">Héctor:</strong> ;
+                appendMessage(output, 'Héctor', response, '#22c55e', true);
                 output.scrollTop = output.scrollHeight;
             }, 500);
+        }
+
+        function appendMessage(output, sender, text, color, emphasize = false) {
+            const line = document.createElement('div');
+            const label = document.createElement(emphasize ? 'strong' : 'span');
+            label.style.color = color;
+            label.textContent = `${sender}:`;
+            line.append(label, document.createTextNode(` ${text}`));
+            output.appendChild(line);
         }
 
         function handleKey(e) {

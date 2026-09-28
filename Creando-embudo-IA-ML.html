@@ -54,20 +54,42 @@
             word-break: break-all;
             font-size: 12px;
         }
+        .cta-link {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            transition: all 0.2s ease-in-out;
+        }
+        .cta-link:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🦍 GORILLA AI</h1>
-        <h2 style="color: #764ba2; margin-bottom: 20px;">Escanea para acceder</h2>
+        <h2 style="color: #764ba2; margin-bottom: 20px;">Escanea para ver Base44</h2>
         <div id="qrcode"></div>
-        <p class="link-text">https://mglrte1986.github.io/gorilla-ai-system</p>
+        <p class="link-text"><a id="base44Link" href="https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing" target="_blank" rel="noopener noreferrer">https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing</a></p>
+        <a href="https://base44.pxf.io/c/7545212/3783676/25619?trafcat=pricing" class="cta-link" target="_blank" rel="noopener noreferrer">
+            Ver Planes y Precios Base44
+        </a>
     </div>
 
     <script>
-        // Generar QR con la URL correcta
+        const trackingUrl = document.getElementById("base44Link").href;
+
         new QRCode(document.getElementById("qrcode"), {
-            text: "https://mglrte1986.github.io/gorilla-ai-system",
+            text: trackingUrl,
             width: 300,
             height: 300,
             colorDark: "#667eea",
