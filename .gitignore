@@ -2,3 +2,7 @@
 __pycache__/
 *.log
 node_modules/
+build/
+.react-router/
+prisma/*.sqlite
+prisma/*.db
